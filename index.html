@@ -109,14 +109,18 @@
             opacity: 0.6;
         }
 
-        /* --- ▼▼▼ NUOVO BLOCCO STATISTICHE ▼▼▼ --- */
+        /* --- ▼▼▼ BLOCCO STATISTICHE MODIFICATO ▼▼▼ --- */
         .stats-container {
             border-top: 1px solid #30363d; /* Linea di separazione */
             width: 100%;
             margin-top: 35px;
-            padding-top: 25px;
-            color: #8b949e;
+            padding: 25px 10px; /* Aumentato padding */
             font-size: 0.9em;
+            background-color: rgba(0, 0, 0, 0.6); /* Sfondo semi-trasparente */
+            border-radius: 8px; /* Angoli arrotondati */
+            /* Etichette: Bianco e Grassetto */
+            color: #FFFFFF; 
+            font-weight: 700; 
         }
 
         .stats-box {
@@ -124,11 +128,13 @@
             margin: 0 15px;
         }
 
+        /* Numeri: Bianco */
         .stats-box span {
             display: block;
             font-size: 1.8em;
-            color: #238636; /* Verde */
+            color: #FFFFFF; /* Modificato da Verde a Bianco */
             font-weight: 700;
+            margin-top: 5px; /* Aggiunto spazio sopra il numero */
         }
         
         /* Stile per il caricamento */
@@ -139,7 +145,6 @@
             50% { opacity: 0.3; }
         }
         /* --- ▲▲▲ FINE BLOCCO STATISTICHE ▲▲▲ --- */
-
 
         @keyframes typing { from { width: 0 } to { width: 100% } }
         @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(0, 255, 0, .75); } }
@@ -154,6 +159,9 @@
             h1 { font-size: 1.8em; }
             h2 { font-size: 1.3em; }
             p { font-size: 1.0em; }
+            .stats-box {
+                 margin: 5px 10px; /* Ridotto margine su mobile */
+            }
         }
     </style>
 </head>
@@ -195,7 +203,8 @@
                 <span id="stats-in-attesa" class="loading">...</span>
             </div>
         </div>
-        </div>
+
+    </div>
 
     <script>
         // --- Script #1: Effetto "macchina da scrivere" ---
@@ -258,17 +267,30 @@
         setInterval(drawMatrix, 33);
 
 
-        // --- ▼▼▼ NUOVO SCRIPT #3: STATISTICHE ▼▼▼ ---
+        // --- Script #3: STATISTICHE ---
 
         // Incolla qui l'URL della tua Web App
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxk0v9Tk1pVB7evv-KyRll436aWrITUupHAVxSs3AebxayY6KMa90WlUMjAqko1k-QK/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxk0v9Tk1pVB7evv-KyRll436aWrITUupHAVxSs3AebxayY6KMa90WlUMjAqko1k-QK/exec"; // <--- !!!! MODIFICA QUESTO !!!!
 
         async function caricaStatistiche() {
             const registratiEl = document.getElementById('stats-registrati');
             const inAttesaEl = document.getElementById('stats-in-attesa');
 
+            // Assicurati che l'URL sia stato inserito
+            if (WEB_APP_URL.includes("....")) {
+                 console.error("URL Web App non configurato nello script HTML.");
+                 registratiEl.innerText = "Errore";
+                 inAttesaEl.innerText = "Conf.";
+                 registratiEl.classList.remove('loading');
+                 inAttesaEl.classList.remove('loading');
+                 return;
+            }
+
             try {
                 const response = await fetch(WEB_APP_URL);
+                if (!response.ok) { // Controlla se la richiesta è andata a buon fine
+                     throw new Error(`Errore HTTP: ${response.status}`);
+                }
                 const data = await response.json();
 
                 if (data.errore) {
@@ -295,7 +317,6 @@
         // Avvia il caricamento delle statistiche quando la pagina è pronta
         window.addEventListener('load', caricaStatistiche);
         
-        // --- ▲▲▲ FINE SCRIPT STATISTICHE ▲▲▲ ---
     </script>
 
 </body>
