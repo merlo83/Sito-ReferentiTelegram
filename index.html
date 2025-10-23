@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accesso Gruppo Referenti</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #c9d1d9;
+            font-family: 'Roboto Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        #page-wrapper {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 0 5px #000, 0 0 10px #000;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 2.2em;
+            border-right: 2px solid rgba(0, 255, 0, .75);
+            white-space: nowrap;
+            overflow: hidden;
+            margin: 0 auto;
+            animation: typing 3.5s steps(40, end) forwards,
+                       blink-caret .75s step-end infinite;
+            max-width: 100%;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 1.6em;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #c9d1d9;
+            margin: 15px 0;
+        }
+
+        .contact-info {
+            margin-top: 25px;
+        }
+
+        .contact-info a {
+            color: #2AABEE;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #238636;
+            color: #ffffff;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 6px;
+            margin-top: 30px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(35, 134, 54, 0.3);
+        }
+        .cta-button:hover { 
+            background-color: #2ea043; 
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(35, 134, 54, 0.5);
+        }
+
+        .visitor-counter {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(0, 255, 0, .75); } }
+
+        @media (max-width: 768px) {
+            .container { justify-content: center; padding: 30px 20px; }
+            h1 { font-size: 1.4em; white-space: normal; border-right: none; animation: none; line-height: 1.3; }
+            h2 { font-size: 1.2em; margin-top: 15px; margin-bottom: 15px; }
+            p { font-size: 0.95em; line-height: 1.5; margin: 12px 0; }
+            .cta-button { font-size: 1.05em; padding: 12px 25px; margin-top: 20px; }
+            .contact-info { margin-top: 20px; }
+            .contact-info a { font-size: 1em; }
+            .visitor-counter { margin-top: 20px; margin-bottom: 15px; }
+        }
+
+        @media (max-width: 400px) {
+            .container { padding: 25px 15px; }
+            h1 { font-size: 1.2em; }
+            h2 { font-size: 1.1em; }
+            p { font-size: 0.9em; }
+            .cta-button { font-size: 1em; padding: 10px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="page-wrapper">
+        <canvas id="matrix-canvas"></canvas>
+        <div class="container">
+            <h1 id="title"></h1> 
+            <h2>Gruppo Referenti Informatici</h2>
+            <p>
+                Pagina di registrazione riservata ai Referenti Informatici e Tecnici Telematici.
+                Premi il pulsante per avviare la procedura di autenticazione.
+            </p>
+            <div class="contact-info">
+                <a href="https://t.me/merlo83" target="_blank">Contatto Admin: @merlo83</a>
+            </div>
+            <a href="https://forms.gle/teQPA9cjgtQrojdh9" class="cta-button">INIZIA REGISTRAZIONE</a>
+            <div class="visitor-counter">
+                <a href="https://www.hitwebcounter.com/" target="_blank">
+                <img src="https://hitwebcounter.com/counter/counter.php?page=21452131&style=0001&nbdigits=5&type=page&initCount=0" title="Counters" Alt="Counters" border="0" /></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Effetto macchina da scrivere
+        const textToType = "> Accesso Area Riservata"; 
+        const titleElement = document.getElementById('title');
+        let index = 0, speed = 80;
+        function typeWriter() {
+            if (index < textToType.length) {
+                titleElement.innerHTML += textToType.charAt(index);
+                index++;
+                setTimeout(typeWriter, speed);
+            }
+        }
+        if (window.innerWidth > 768) {
+            window.addEventListener('load', typeWriter);
+        } else {
+            titleElement.innerHTML = textToType;
+        }
+
+        // Effetto Matrix Rain
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight; // sempre viewport
+        }
+        resizeCanvas();
+
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = new Array(columns).fill(0).map(() =>
+            Math.floor(Math.random() * canvas.height / fontSize)
+        );
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            columns = Math.floor(canvas.width / fontSize);
+            drops = new Array(columns).fill(0).map(() =>
+                Math.floor(Math.random() * canvas.height / fontSize)
+            );
+        });
+
+        let katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        let chars = (katakana + '0123456789').split('');
+        function drawMatrix() {
+            // Sfondo semitrasparente per effetto scia
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px Roboto Mono';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // Reset casuale della colonna quando arriva in fondo
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        // Avvio animazione
+        setInterval(drawMatrix, 33);
+    </script>
+</body>
+</html>
