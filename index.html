@@ -52,11 +52,11 @@
             white-space: nowrap;
             overflow: hidden;
             margin: 0 auto;
-            animation: 
+            animation:
                 typing 3.5s steps(40, end) forwards,
                 blink-caret .75s step-end infinite;
         }
-        
+
         /* Titolo Principale */
         h2 {
             color: #ffffff;
@@ -76,14 +76,14 @@
         .contact-info {
             margin-top: 25px;
         }
-        
+
         .contact-info a {
             color: #2AABEE;
             text-decoration: none;
             font-size: 1.1em;
             font-weight: 700;
         }
-        
+
         .contact-info a:hover {
             text-decoration: underline;
         }
@@ -103,13 +103,7 @@
         }
         .cta-button:hover { background-color: #2ea043; transform: scale(1.05); }
 
-        /* Contatore Visite */
-        .visitor-counter {
-            margin-top: 30px;
-            opacity: 0.6;
-        }
-
-        /* --- ▼▼▼ BLOCCO STATISTICHE MODIFICATO ▼▼▼ --- */
+        /* --- BLOCCO STATISTICHE MODIFICATO --- */
         .stats-container {
             border-top: 1px solid #30363d; /* Linea di separazione */
             width: 100%;
@@ -119,8 +113,8 @@
             background-color: rgba(0, 0, 0, 0.6); /* Sfondo semi-trasparente */
             border-radius: 8px; /* Angoli arrotondati */
             /* Etichette: Bianco e Grassetto */
-            color: #FFFFFF; 
-            font-weight: 700; 
+            color: #FFFFFF;
+            font-weight: 700;
         }
 
         .stats-box {
@@ -136,7 +130,7 @@
             font-weight: 700;
             margin-top: 5px; /* Aggiunto spazio sopra il numero */
         }
-        
+
         /* Stile per il caricamento */
         .loading {
             animation: blink 1s infinite;
@@ -144,7 +138,7 @@
         @keyframes blink {
             50% { opacity: 0.3; }
         }
-        /* --- ▲▲▲ FINE BLOCCO STATISTICHE ▲▲▲ --- */
+        /* --- FINE BLOCCO STATISTICHE --- */
 
         @keyframes typing { from { width: 0 } to { width: 100% } }
         @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(0, 255, 0, .75); } }
@@ -153,8 +147,8 @@
         /* Correzione per Mobile */
         @media (max-width: 600px) {
             .container {
-                justify-content: flex-start; 
-                padding-top: 10vh; 
+                justify-content: flex-start;
+                padding-top: 10vh;
             }
             h1 { font-size: 1.8em; }
             h2 { font-size: 1.3em; }
@@ -164,17 +158,26 @@
             }
         }
     </style>
-</head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KBE63SN7L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2KBE63SN7L');
+    </script>
+    </head>
 <body>
 
     <canvas id="matrix-canvas"></canvas>
 
     <div class="container">
-        
-        <h1 id="title"></h1> 
-        
+
+        <h1 id="title"></h1>
+
         <h2>Gruppo Referenti Informatici</h2>
-        
+
         <p>
             Pagina di registrazione riservata ai Referenti Informatici e Tecnici Telematici.
             Premi il pulsante per avviare la procedura di autenticazione.
@@ -183,15 +186,10 @@
         <div class="contact-info">
             <a href="https://t.me/merlo83" target="_blank">Contatto Admin: @merlo83</a>
         </div>
-        
+
         <a href="https://forms.gle/teQPA9cjgtQrojdh9" class="cta-button">
             INIZIA REGISTRAZIONE
         </a>
-
-        <div class="visitor-counter">
-            <a href="https://www.hitwebcounter.com/" target="_blank">
-            <img src="https://hitwebcounter.com/counter/counter.php?page=21452131&style=0001&nbdigits=5&type=page&initCount=0" title="Counters" Alt="Counters" border="0" /></a>
-        </div>
 
         <div class="stats-container">
             <div class="stats-box">
@@ -208,11 +206,11 @@
 
     <script>
         // --- Script #1: Effetto "macchina da scrivere" ---
-        
-        const textToType = "> Accesso Area Riservata"; 
+
+        const textToType = "> Accesso Area Riservata";
         const titleElement = document.getElementById('title');
         let index = 0;
-        let speed = 80; 
+        let speed = 80;
 
         function typeWriter() {
             if (index < textToType.length) {
@@ -223,7 +221,7 @@
         }
         window.addEventListener('load', typeWriter);
 
-        
+
         // --- Script #2: Effetto "Matrix Rain" ---
 
         const canvas = document.getElementById('matrix-canvas');
@@ -237,7 +235,7 @@
             columns = canvas.width / fontSize;
             drops = [];
             for(let x = 0; x < columns; x++) {
-                drops[x] = 1; 
+                drops[x] = 1;
             }
         });
 
@@ -248,20 +246,20 @@
         let columns = canvas.width / fontSize;
         let drops = [];
         for(let x = 0; x < columns; x++) {
-            drops[x] = 1; 
+            drops[x] = 1;
         }
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#0F0'; 
-            ctx.font = fontSize + 'px ' + 'Roboto Mono'; 
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px ' + 'Roboto Mono';
             for(let i = 0; i < drops.length; i++) {
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
                 if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
-                drops[i]++; 
+                drops[i]++;
             }
         }
         setInterval(drawMatrix, 33);
@@ -276,7 +274,6 @@
             const registratiEl = document.getElementById('stats-registrati');
             const inAttesaEl = document.getElementById('stats-in-attesa');
 
-            // Assicurati che l'URL sia stato inserito
             if (WEB_APP_URL.includes("....")) {
                  console.error("URL Web App non configurato nello script HTML.");
                  registratiEl.innerText = "Errore";
@@ -288,7 +285,7 @@
 
             try {
                 const response = await fetch(WEB_APP_URL);
-                if (!response.ok) { // Controlla se la richiesta è andata a buon fine
+                if (!response.ok) {
                      throw new Error(`Errore HTTP: ${response.status}`);
                 }
                 const data = await response.json();
@@ -297,11 +294,9 @@
                     throw new Error(data.errore);
                 }
 
-                // Aggiorna i numeri
                 registratiEl.innerText = data.utenti_registrati;
                 inAttesaEl.innerText = data.utenti_in_attesa;
-                
-                // Rimuovi l'effetto "loading"
+
                 registratiEl.classList.remove('loading');
                 inAttesaEl.classList.remove('loading');
 
@@ -313,10 +308,9 @@
                 inAttesaEl.classList.remove('loading');
             }
         }
-        
-        // Avvia il caricamento delle statistiche quando la pagina è pronta
+
         window.addEventListener('load', caricaStatistiche);
-        
+
     </script>
 
 </body>
