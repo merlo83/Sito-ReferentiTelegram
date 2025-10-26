@@ -233,7 +233,7 @@
         <!-- LINK REGISTRAZIONE (Nascosto) -->
         <div id="registration-link-container">
              <p>Questo CIP non risulta nei nostri elenchi.<br>Sei sicuro di aver digitato correttamente?<br>Se sì, e non ti sei mai registrato, procedi:</p>
-             <a href="https://forms.gle/teQPA9cjgtQrojdh9" class="cta-button">
+             <a href="https://docs.google.com/forms/d/e/1FAIpQLSeYQ5Bq3v6CsQ4CqriLIowZ4-yuYkNUElBgS8ANPf67pg4qkg/viewform" id="registration-link" class="cta-button" target="_blank">
                  Vai al Modulo di Registrazione
              </a>
         </div>
@@ -267,33 +267,19 @@
         // --- Script #2: Effetto "Matrix Rain" ---
         const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d');
         let cw = window.innerWidth; let ch = window.innerHeight; canvas.width = cw; canvas.height = ch;
-        window.addEventListener('resize', () => { cw = window.innerWidth; ch = window.innerHeight; canvas.width = cw; canvas.height = ch; columns = Math.max(1, Math.floor(cw / fontSize)); drops = []; for(let x = 0; x < columns; x++) drops[x] = 1 + Math.random() * ch / fontSize; }); // Added Math.max(1, ...)
+        window.addEventListener('resize', () => { cw = window.innerWidth; ch = window.innerHeight; canvas.width = cw; canvas.height = ch; columns = Math.max(1, Math.floor(cw / fontSize)); drops = []; for(let x = 0; x < columns; x++) drops[x] = 1 + Math.random() * ch / fontSize; });
         let katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        let chars = (katakana + '0123456789').split(''); const fontSize = 14; let columns = Math.max(1, Math.floor(cw / fontSize)); let drops = []; // Added Math.max(1, ...)
+        let chars = (katakana + '0123456789').split(''); const fontSize = 14; let columns = Math.max(1, Math.floor(cw / fontSize)); let drops = [];
         for(let x = 0; x < columns; x++) drops[x] = 1 + Math.random() * ch / fontSize;
-        function drawMatrix() {
-            try { // Added try-catch for safety
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)'; // Slightly faster fade
-                ctx.fillRect(0, 0, cw, ch);
-                ctx.fillStyle = '#0F0'; // Green
-                ctx.font = fontSize + 'px Roboto Mono';
-                for(let i = 0; i < drops.length; i++) {
-                    const text = chars[Math.floor(Math.random() * chars.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    if(drops[i] * fontSize > ch && Math.random() > 0.975) drops[i] = 0;
-                    drops[i]++;
-                }
-            } catch (e) {
-                console.error("Errore in drawMatrix:", e);
-                clearInterval(matrixInterval); // Stop animation on error
-            }
-        }
-        let matrixInterval = setInterval(drawMatrix, 50); // Adjusted speed slightly
+        function drawMatrix() { try { ctx.fillStyle = 'rgba(0, 0, 0, 0.04)'; ctx.fillRect(0, 0, cw, ch); ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px Roboto Mono'; for(let i = 0; i < drops.length; i++) { const text = chars[Math.floor(Math.random() * chars.length)]; ctx.fillText(text, i * fontSize, drops[i] * fontSize); if(drops[i] * fontSize > ch && Math.random() > 0.975) drops[i] = 0; drops[i]++; } } catch (e) { console.error("Errore in drawMatrix:", e); clearInterval(matrixInterval); } }
+        let matrixInterval = setInterval(drawMatrix, 50);
 
-        // --- Script #3: STATISTICHE e VERIFICA CIP ---
+        // --- Script #3: STATISTICHE e VERIFICA CIP (con Precompilazione) ---
         // ▼▼▼ URL INCOLLATO QUI ▼▼▼
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxk0v9Tk1pVB7evv-KyRll436aWrITUupHAVxSs3AebxayY6KMa90WlUMjAqko1k-QK/exec";
         // ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲
+        const FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeYQ5Bq3v6CsQ4CqriLIowZ4-yuYkNUElBgS8ANPf67pg4qkg/viewform"; // URL Base del form
+        const CIP_ENTRY_ID = "entry.1189364192"; // ID del campo CIP
 
         const registratiEl = document.getElementById('stats-registrati');
         const inAttesaEl = document.getElementById('stats-in-attesa');
@@ -301,12 +287,13 @@
         const verifyButton = document.getElementById('verify-button');
         const verificationResultEl = document.getElementById('verification-result');
         const registrationLinkContainer = document.getElementById('registration-link-container');
+        const registrationLink = document.getElementById('registration-link');
         let isVerifying = false;
 
         // Funzione Statistiche
         async function caricaStatistiche() {
             if (!WEB_APP_URL || WEB_APP_URL.includes("INCOLLA QUI") || WEB_APP_URL.length < 20) {
-                 console.error("URL Web App non configurato correttamente nello script HTML.");
+                 console.error("URL Web App non configurato o errato.");
                  registratiEl.innerText = "Errore"; inAttesaEl.innerText = "Conf.";
                  registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
                  return;
@@ -320,7 +307,7 @@
                     try { document.body.removeChild(script); } catch(e) {}
                     delete window[callbackName];
                     if (data.errore) { throw new Error(data.errore); }
-                    if (data.tipo !== 'statistiche') { throw new Error("Risposta non valida (tipo errato per stats)"); }
+                    if (data.tipo !== 'statistiche') { throw new Error("Risposta stat non valida (tipo errato)"); }
                     registratiEl.innerText = data.utenti_registrati ?? 'N/D';
                     inAttesaEl.innerText = data.utenti_in_attesa ?? 'N/D';
                     registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
@@ -334,7 +321,7 @@
                 document.body.appendChild(script);
                 setTimeout(() => {
                     if (window[callbackName]) {
-                        console.error("Timeout caricamento statistiche dopo 20 secondi.");
+                        console.error("Timeout caricamento statistiche (20s).");
                         registratiEl.innerText = "Timeout"; inAttesaEl.innerText = "Timeout";
                         registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
                         try { document.body.removeChild(script); } catch(e) {}
@@ -352,6 +339,7 @@
         async function verificaCIP() {
             if (isVerifying) return;
             isVerifying = true; verifyButton.disabled = true;
+
             const cip = cipInput.value.trim().toUpperCase();
             verificationResultEl.style.display = 'block';
             verificationResultEl.innerHTML = '<span class="loading">Verifica in corso...</span>';
@@ -372,7 +360,7 @@
                      try { document.body.removeChild(script); } catch(e) {}
                      delete window[callbackName];
                      if (data.errore) { throw new Error(data.errore); }
-                     if (data.tipo !== 'verifica') { throw new Error("Risposta server non valida per verifica."); }
+                     if (data.tipo !== 'verifica') { throw new Error("Risposta verifica non valida."); }
 
                      if (data.trovato) {
                          let statusClass = '';
@@ -394,6 +382,8 @@
                          verificationResultEl.innerHTML = data.messaggio || "Questo CIP non risulta nei nostri elenchi. Sei sicuro di aver digitato correttamente?";
                          verificationResultEl.className = 'status-error';
                          if (data.messaggio && data.messaggio.toLowerCase().includes("non trovato")) {
+                              const prefilledUrl = `${FORM_BASE_URL}?usp=pp_url&${CIP_ENTRY_ID}=${encodeURIComponent(cip)}`;
+                              registrationLink.href = prefilledUrl;
                               registrationLinkContainer.style.display = 'block';
                          } else {
                               registrationLinkContainer.style.display = 'none';
@@ -402,7 +392,7 @@
                      isVerifying = false; verifyButton.disabled = false;
                  };
                  script.onerror = function() {
-                     console.error("Errore nel caricamento dello script JSONP per la verifica CIP.");
+                     console.error("Errore caricamento script JSONP verifica CIP.");
                      verificationResultEl.innerHTML = "Impossibile contattare il server di verifica. Riprova più tardi.";
                      verificationResultEl.className = 'status-error';
                      if(window[callbackName]) delete window[callbackName];
@@ -411,7 +401,7 @@
                  document.body.appendChild(script);
                  setTimeout(() => {
                      if (window[callbackName]) {
-                           console.error("Timeout verifica CIP dopo 15 secondi.");
+                           console.error("Timeout verifica CIP (15s).");
                            verificationResultEl.innerHTML = "Errore durante la verifica (timeout). Riprova più tardi.";
                            verificationResultEl.className = 'status-error';
                            try { document.body.removeChild(script); } catch(e) {}
@@ -421,7 +411,7 @@
                  }, 15000); // Timeout 15 secondi
 
             } catch (error) {
-                 console.error("Errore verifica CIP:", error);
+                 console.error("Errore imprevisto in verificaCIP:", error);
                  verificationResultEl.innerHTML = "Errore durante la verifica. Riprova più tardi.";
                  verificationResultEl.className = 'status-error';
                  isVerifying = false; verifyButton.disabled = false;
