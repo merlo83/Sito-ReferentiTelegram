@@ -3,90 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accesso Gruppo Referenti</title>
+    <title>Accesso Gruppo Referenti Informatici</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
 
         /* Impostazioni globali e Sfondo */
-        body, html { margin: 0; padding: 0; min-height: 100%; background-color: #000; color: #c9d1d9; font-family: 'Roboto Mono', monospace; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .container { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; text-align: center; max-width: 600px; margin: 0 auto; text-shadow: 0 0 5px #000, 0 0 10px #000; }
-        h1 { color: #ffffff; font-size: 2.2em; border-right: 2px solid rgba(0, 255, 0, .75); white-space: nowrap; overflow: hidden; margin: 0 auto; animation: typing 3.5s steps(40, end) forwards, blink-caret .75s step-end infinite; }
-        h2 { color: #ffffff; font-size: 1.6em; margin-top: 10px; margin-bottom: 20px; font-weight: 700; }
-        p { font-size: 1.1em; line-height: 1.6; color: #c9d1d9; }
-        .contact-info { margin-top: 25px; }
-        .contact-info a { color: #2AABEE; text-decoration: none; font-size: 1.1em; font-weight: 700; }
-        .contact-info a:hover { text-decoration: underline; }
-        .cta-button { display: inline-block; background-color: #238636; color: #ffffff; font-weight: 700; text-decoration: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; margin-top: 30px; transition: background-color 0.3s ease, transform 0.3s ease; cursor: pointer; border: none; }
-        .cta-button:hover { background-color: #2ea043; transform: scale(1.05); }
-        .stats-container { border-top: 1px solid #30363d; width: 100%; margin-top: 35px; padding: 25px 10px; font-size: 0.9em; background-color: rgba(0, 0, 0, 0.6); border-radius: 8px; color: #FFFFFF; font-weight: 700; }
-        .stats-box { display: inline-block; margin: 0 15px; }
-        .stats-box span { display: block; font-size: 1.8em; color: #FFFFFF; font-weight: 700; margin-top: 5px; }
-        .loading { animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.3; } }
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(0, 255, 0, .75); } }
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            background-color: #000;
+            color: #c9d1d9;
+            font-family: 'Roboto Mono', monospace;
+        }
 
-        /* --- ▼▼▼ NUOVO CSS PER VERIFICA CIP ▼▼▼ --- */
-        #verification-section {
-            border-top: 1px solid #30363d;
+        /* Il Canvas per l'effetto Matrix */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            margin-top: 35px;
-            padding-top: 25px;
+            height: 100%;
+            z-index: 1; /* Sta dietro */
+            pointer-events: none; /* Ignora eventi mouse/touch */
+        }
+
+        /* Contenitore per il contenuto */
+        .container {
+            position: relative;
+            z-index: 2; /* Sta davanti */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centra su Desktop */
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 0 5px #000, 0 0 10px #000;
+        }
+
+        /* Titolo animato */
+        h1 {
+            color: #ffffff;
+            font-size: 2.2em;
+            border-right: 2px solid rgba(0, 255, 0, .75);
+            white-space: nowrap;
+            overflow: hidden;
+            margin: 0 auto;
+            animation:
+                typing 3.5s steps(40, end) forwards,
+                blink-caret .75s step-end infinite;
+        }
+
+        /* Titolo Principale */
+        h2 {
+            color: #ffffff;
+            font-size: 1.6em;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #c9d1d9;
+            margin-bottom: 25px;
+        }
+
+        /* Sezione Verifica CIP */
+        #verification-section {
+            background-color: rgba(13, 17, 23, 0.7);
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            width: 100%;
+            box-sizing: border-box;
         }
         #verification-section h3 {
              color: #ffffff;
-             font-size: 1.3em;
-             margin-bottom: 15px;
+             font-size: 1.4em;
+             margin-top: 0;
+             margin-bottom: 20px;
+        }
+        /* Contenitore input + bottone */
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         #cip-input {
             font-family: 'Roboto Mono', monospace;
             background-color: #0d1117;
             color: #c9d1d9;
             border: 1px solid #30363d;
-            padding: 10px 15px;
-            font-size: 1em;
+            padding: 12px 15px;
+            font-size: 1.1em;
             border-radius: 6px;
-            width: 70%;
-            max-width: 250px;
+            width: 60%;
+            max-width: 200px;
             text-align: center;
-            margin-right: 10px;
+            box-sizing: border-box;
         }
-        #verify-button { /* Usa lo stesso stile del pulsante CTA */
-            padding: 10px 20px;
-            font-size: 1em;
+        .cta-button, #verify-button {
+            display: inline-block;
+            background-color: #238636;
+            color: #ffffff;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+            border: none;
+            vertical-align: middle;
         }
+         #verify-button {
+             margin-top: 0;
+             flex-shrink: 0;
+         }
+        .cta-button:hover, #verify-button:hover { background-color: #2ea043; transform: scale(1.05); }
+
         #verification-result {
-            margin-top: 20px;
+            margin-top: 25px;
             padding: 15px;
-            background-color: rgba(13, 17, 23, 0.8); /* Sfondo scuro trasparente */
+            background-color: rgba(0, 0, 0, 0.7);
             border: 1px solid #30363d;
             border-radius: 6px;
-            min-height: 50px; /* Altezza minima per vedere il loading */
-            line-height: 1.6;
+            min-height: 40px;
+            line-height: 1.7;
             color: #c9d1d9;
-            text-align: left; /* Allinea a sinistra i risultati */
+            text-align: left;
+            font-size: 1em;
         }
-        #verification-result strong { color: #ffffff; }
-        /* Stili per i messaggi di stato */
-        .status-ok { color: #238636; font-weight: bold; } /* Verde */
-        .status-pending { color: #FFA500; font-weight: bold; } /* Arancione */
-        .status-rejected { color: #f85149; font-weight: bold; } /* Rosso */
-        .status-error { color: #f85149; font-weight: bold; } /* Rosso */
-        /* --- ▲▲▲ FINE CSS VERIFICA CIP ▲▲▲ --- */
+        #verification-result strong { color: #ffffff; display: block; margin-bottom: 8px; }
+        #verification-result span { display: block; margin-bottom: 3px;}
+        .status-ok { color: #3fb950; font-weight: bold; }
+        .status-pending { color: #d29922; font-weight: bold; }
+        .status-rejected { color: #f85149; font-weight: bold; }
+        .status-error { color: #f85149; font-weight: bold; }
 
-        /* Correzione per Mobile */
+        /* Contenitore Link Registrazione */
+        #registration-link-container {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(13, 17, 23, 0.7);
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        }
+         #registration-link-container p {
+             margin-bottom: 15px;
+             color: #ffffff;
+             font-size: 1em;
+             line-height: 1.5;
+         }
+         #registration-link-container .cta-button { margin-top: 0; }
+
+        /* Contatto Admin */
+        .contact-info { margin-top: 30px; }
+        .contact-info a { color: #2AABEE; text-decoration: none; font-size: 1.1em; font-weight: 700; }
+        .contact-info a:hover { text-decoration: underline; }
+
+        /* Statistiche */
+        .stats-container { border-top: 1px solid #30363d; width: 100%; margin-top: 35px; padding: 20px 10px; font-size: 0.95em; background-color: rgba(0, 0, 0, 0.6); border-radius: 8px; color: #FFFFFF; font-weight: 700; }
+        .stats-box { display: inline-block; margin: 0 15px; }
+        .stats-box span { display: block; font-size: 1.8em; color: #FFFFFF; font-weight: 700; margin-top: 5px; }
+        .loading { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
+
+        /* Animazioni */
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(0, 255, 0, .75); } }
+
+        /* Media Query per Mobile */
         @media (max-width: 600px) {
-            .container { justify-content: flex-start; padding-top: 10vh; }
+            .container { justify-content: flex-start; padding-top: 8vh; padding-bottom: 5vh; }
             h1 { font-size: 1.8em; }
-            h2 { font-size: 1.3em; }
+            h2 { font-size: 1.4em; }
             p { font-size: 1.0em; }
+            .input-group { flex-direction: column; gap: 15px; }
+            #cip-input { width: 90%; max-width: none; margin-right: 0; }
+            #verify-button { width: 90%; }
+            #verification-result { font-size: 0.95em; }
+            #registration-link-container p { font-size: 0.95em; }
             .stats-box { margin: 5px 10px; }
-            #cip-input { width: 60%; margin-right: 5px; }
-            #verify-button { padding: 10px 15px; }
+            .stats-box span { font-size: 1.6em; }
         }
     </style>
 
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KBE63SN7L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -94,6 +208,7 @@
       gtag('js', new Date());
       gtag('config', 'G-2KBE63SN7L');
     </script>
+    <!-- Fine Google tag -->
 
 </head>
 <body>
@@ -103,179 +218,222 @@
     <div class="container">
         <h1 id="title"></h1>
         <h2>Gruppo Referenti Informatici</h2>
-        <p>
-            Pagina di registrazione riservata ai Referenti Informatici e Tecnici Telematici.
-            Premi il pulsante per avviare la procedura di autenticazione.
-        </p>
+
+        <!-- SEZIONE VERIFICA CIP (SOLO CIP) -->
+        <div id="verification-section">
+            <h3>Verifica Registrazione</h3>
+            <p style="margin-bottom: 20px;">Inserisci il tuo CIP per controllare lo stato.</p>
+            <div class="input-group">
+                <input type="text" id="cip-input" class="input-field" placeholder="123456AB" maxlength="8" aria-label="Inserisci CIP">
+                <button id="verify-button" class="cta-button">Verifica</button>
+            </div>
+            <div id="verification-result" style="display: none;"></div>
+        </div>
+
+        <!-- LINK REGISTRAZIONE (Nascosto) -->
+        <div id="registration-link-container">
+             <p>Questo CIP non risulta nei nostri elenchi.<br>Sei sicuro di aver digitato correttamente?<br>Se sì, e non ti sei mai registrato, procedi:</p>
+             <a href="https://forms.gle/teQPA9cjgtQrojdh9" class="cta-button">
+                 Vai al Modulo di Registrazione
+             </a>
+        </div>
+
+        <!-- INFO CONTATTO ADMIN -->
         <div class="contact-info">
             <a href="https://t.me/merlo83" target="_blank">Contatto Admin: @merlo83</a>
         </div>
-        <a href="https://forms.gle/teQPA9cjgtQrojdh9" class="cta-button">
-            INIZIA REGISTRAZIONE
-        </a>
 
+        <!-- STATISTICHE -->
         <div class="stats-container">
             <div class="stats-box">
-                Utenti Registrati:
+                Registrati Confermati:
                 <span id="stats-registrati" class="loading">...</span>
             </div>
             <div class="stats-box">
-                Utenti In Attesa:
+                Registrazioni in Attesa:
                 <span id="stats-in-attesa" class="loading">...</span>
             </div>
         </div>
 
-        <div id="verification-section">
-            <h3>Verifica Registrazione</h3>
-            <div>
-                <input type="text" id="cip-input" placeholder="Inserisci CIP (es. 123456AB)" maxlength="8">
-                <button id="verify-button" class="cta-button">Verifica</button>
-            </div>
-            <div id="verification-result" style="display: none;"></div> </div>
-        </div>
+    </div>
 
     <script>
         // --- Script #1: Effetto "macchina da scrivere" ---
         const textToType = "> Accesso Area Riservata";
         const titleElement = document.getElementById('title');
         let index = 0; let speed = 80;
-        function typeWriter() { /* ... (codice invariato) ... */ if (index < textToType.length) { titleElement.innerHTML += textToType.charAt(index); index++; setTimeout(typeWriter, speed); } }
-        window.addEventListener('load', typeWriter);
+        function typeWriter() { if (index < textToType.length) { titleElement.innerHTML += textToType.charAt(index); index++; setTimeout(typeWriter, speed); } }
 
         // --- Script #2: Effetto "Matrix Rain" ---
-        const canvas = document.getElementById('matrix-canvas'); /* ... (codice invariato) ... */ const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; window.addEventListener('resize', () => { /* ... */ }); let katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン'; let chars = katakana + '0123456789'; chars = chars.split(''); const fontSize = 14; let columns = canvas.width / fontSize; let drops = []; for(let x = 0; x < columns; x++) { drops[x] = 1; } function drawMatrix() { /* ... */ ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px ' + 'Roboto Mono'; for(let i = 0; i < drops.length; i++) { const text = chars[Math.floor(Math.random() * chars.length)]; ctx.fillText(text, i * fontSize, drops[i] * fontSize); if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) { drops[i] = 0; } drops[i]++; } } setInterval(drawMatrix, 33);
+        const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d');
+        let cw = window.innerWidth; let ch = window.innerHeight; canvas.width = cw; canvas.height = ch;
+        window.addEventListener('resize', () => { cw = window.innerWidth; ch = window.innerHeight; canvas.width = cw; canvas.height = ch; columns = Math.max(1, Math.floor(cw / fontSize)); drops = []; for(let x = 0; x < columns; x++) drops[x] = 1 + Math.random() * ch / fontSize; }); // Added Math.max(1, ...)
+        let katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        let chars = (katakana + '0123456789').split(''); const fontSize = 14; let columns = Math.max(1, Math.floor(cw / fontSize)); let drops = []; // Added Math.max(1, ...)
+        for(let x = 0; x < columns; x++) drops[x] = 1 + Math.random() * ch / fontSize;
+        function drawMatrix() {
+            try { // Added try-catch for safety
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)'; // Slightly faster fade
+                ctx.fillRect(0, 0, cw, ch);
+                ctx.fillStyle = '#0F0'; // Green
+                ctx.font = fontSize + 'px Roboto Mono';
+                for(let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    if(drops[i] * fontSize > ch && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+            } catch (e) {
+                console.error("Errore in drawMatrix:", e);
+                clearInterval(matrixInterval); // Stop animation on error
+            }
+        }
+        let matrixInterval = setInterval(drawMatrix, 50); // Adjusted speed slightly
 
         // --- Script #3: STATISTICHE e VERIFICA CIP ---
+        // ▼▼▼ URL INCOLLATO QUI ▼▼▼
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxk0v9Tk1pVB7evv-KyRll436aWrITUupHAVxSs3AebxayY6KMa90WlUMjAqko1k-QK/exec";
+        // ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲
 
-        // Incolla qui l'URL della tua Web App
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxk0v9Tk1pVB7evv-KyRll436aWrITUupHAVxSs3AebxayY6KMa90WlUMjAqko1k-QK/exec"; // <--- !!!! MODIFICA QUESTO !!!!
-
-        // Elementi per le statistiche
         const registratiEl = document.getElementById('stats-registrati');
         const inAttesaEl = document.getElementById('stats-in-attesa');
-        
-        // Elementi per la verifica CIP
         const cipInput = document.getElementById('cip-input');
         const verifyButton = document.getElementById('verify-button');
         const verificationResultEl = document.getElementById('verification-result');
+        const registrationLinkContainer = document.getElementById('registration-link-container');
+        let isVerifying = false;
 
-        // Funzione per caricare le statistiche
+        // Funzione Statistiche
         async function caricaStatistiche() {
-            // ... (codice invariato per caricare statistiche) ...
-            if (WEB_APP_URL.includes("....")) { console.error("URL Web App non configurato."); registratiEl.innerText = "Errore"; inAttesaEl.innerText = "Conf."; /*...*/ return; }
+            if (!WEB_APP_URL || WEB_APP_URL.includes("INCOLLA QUI") || WEB_APP_URL.length < 20) {
+                 console.error("URL Web App non configurato correttamente nello script HTML.");
+                 registratiEl.innerText = "Errore"; inAttesaEl.innerText = "Conf.";
+                 registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
+                 return;
+            }
             try {
-                // Aggiungiamo un parametro per dire allo script cosa vogliamo
-                const response = await fetch(WEB_APP_URL + '?action=stats'); 
-                if (!response.ok) { throw new Error(`Errore HTTP: ${response.status}`); }
-                const data = await response.json();
-                if (data.errore) { throw new Error(data.errore); }
-                if (data.tipo !== 'statistiche') { throw new Error("Risposta non valida dal server (tipo errato)"); }
+                const callbackName = 'jsonp_stats_callback_' + Date.now();
+                const script = document.createElement('script');
+                script.src = `${WEB_APP_URL}?callback=${callbackName}`;
 
-                registratiEl.innerText = data.utenti_registrati;
-                inAttesaEl.innerText = data.utenti_in_attesa;
-                registratiEl.classList.remove('loading');
-                inAttesaEl.classList.remove('loading');
-            } catch (error) { /* ... (gestione errore invariata) ... */ console.error("Errore caricamento statistiche:", error); registratiEl.innerText = "N/D"; inAttesaEl.innerText = "N/D"; /*...*/ }
+                window[callbackName] = function(data) {
+                    try { document.body.removeChild(script); } catch(e) {}
+                    delete window[callbackName];
+                    if (data.errore) { throw new Error(data.errore); }
+                    if (data.tipo !== 'statistiche') { throw new Error("Risposta non valida (tipo errato per stats)"); }
+                    registratiEl.innerText = data.utenti_registrati ?? 'N/D';
+                    inAttesaEl.innerText = data.utenti_in_attesa ?? 'N/D';
+                    registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
+                };
+                script.onerror = function() {
+                     console.error("Errore caricamento script JSONP statistiche.");
+                     registratiEl.innerText = "Errore"; inAttesaEl.innerText = "Server";
+                     registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
+                     if(window[callbackName]) delete window[callbackName];
+                };
+                document.body.appendChild(script);
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        console.error("Timeout caricamento statistiche dopo 20 secondi.");
+                        registratiEl.innerText = "Timeout"; inAttesaEl.innerText = "Timeout";
+                        registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
+                        try { document.body.removeChild(script); } catch(e) {}
+                        delete window[callbackName];
+                    }
+                }, 20000); // Timeout 20 secondi
+            } catch (error) {
+                 console.error("Errore imprevisto in caricaStatistiche:", error);
+                 registratiEl.innerText = "Errore"; inAttesaEl.innerText = "JS";
+                 registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
+             }
         }
 
-        // Funzione per gestire la verifica del CIP
+        // Funzione Verifica CIP
         async function verificaCIP() {
-            const cip = cipInput.value.trim().toUpperCase(); // Prendiamo il CIP e lo mettiamo in maiuscolo
-            verificationResultEl.style.display = 'block'; // Mostra l'area risultati
+            if (isVerifying) return;
+            isVerifying = true; verifyButton.disabled = true;
+            const cip = cipInput.value.trim().toUpperCase();
+            verificationResultEl.style.display = 'block';
             verificationResultEl.innerHTML = '<span class="loading">Verifica in corso...</span>';
-            verificationResultEl.className = ''; // Resetta classi colore
+            verificationResultEl.className = ''; registrationLinkContainer.style.display = 'none';
 
-            // Validazione formato CIP (lato client)
             if (!/^[0-9]{6}[A-Z]{2}$/.test(cip)) {
-                 verificationResultEl.innerHTML = "Formato CIP non valido. Inserisci 6 numeri seguiti da 2 lettere (es. 123456AB).";
+                 verificationResultEl.innerHTML = "Formato CIP non valido (6 numeri + 2 lettere).";
                  verificationResultEl.className = 'status-error';
-                 return;
-            }
-
-            if (WEB_APP_URL.includes("....")) {
-                 verificationResultEl.innerHTML = "Errore di configurazione. Contattare l'admin.";
-                 verificationResultEl.className = 'status-error';
-                 return;
+                 isVerifying = false; verifyButton.disabled = false; return;
             }
 
             try {
-                 // Usiamo JSONP per chiamare la Web App da GitHub Pages
-                 const callbackName = 'jsonp_callback_' + Date.now();
+                 const callbackName = 'jsonp_verify_callback_' + Date.now();
                  const script = document.createElement('script');
-                 script.src = `${WEB_APP_URL}?action=verify&cip=${encodeURIComponent(cip)}&callback=${callbackName}`;
+                 script.src = `${WEB_APP_URL}?cip=${encodeURIComponent(cip)}&callback=${callbackName}`;
 
-                 // Definiamo la funzione di callback globale
                  window[callbackName] = function(data) {
-                     // Pulizia: rimuoviamo lo script e la funzione callback
-                     document.body.removeChild(script);
+                     try { document.body.removeChild(script); } catch(e) {}
                      delete window[callbackName];
-
-                     if (data.errore) {
-                         throw new Error(data.errore);
-                     }
-                     if (data.tipo !== 'verifica') {
-                         throw new Error("Risposta non valida dal server.");
-                     }
+                     if (data.errore) { throw new Error(data.errore); }
+                     if (data.tipo !== 'verifica') { throw new Error("Risposta server non valida per verifica."); }
 
                      if (data.trovato) {
-                         // Formatta i risultati
-                         let htmlRisultato = `<strong>Registrazione Trovata:</strong><br>` +
-                                             `Grado: ${data.grado}<br>` +
-                                             `Cognome: ${data.cognome}<br>` +
-                                             `Nome: ${data.nome}<br>` +
-                                             `Sede: ${data.sede}<br>` +
-                                             `Data Reg.: ${data.data_registrazione}<br>`;
-                         
-                         // Aggiungi lo stato con il colore giusto
                          let statusClass = '';
-                         if (data.stato.includes('Confermata')) statusClass = 'status-ok';
-                         else if (data.stato.includes('Incompleta')) statusClass = 'status-rejected';
-                         else if (data.stato.includes('Attesa')) statusClass = 'status-pending';
-                         
-                         htmlRisultato += `Stato: <span class="${statusClass}">${data.stato}</span>`;
-                         
+                         const stato = data.stato || '';
+                         if (stato.includes('Confermata')) statusClass = 'status-ok';
+                         else if (stato.includes('Incompleta')) statusClass = 'status-rejected';
+                         else if (stato.includes('Attesa')) statusClass = 'status-pending';
+                         else statusClass = 'status-error';
+                         let htmlRisultato = `<strong>Risulti Già Registrato:</strong>` +
+                                             `<span>Grado: ${data.grado || 'N/D'}</span>` +
+                                             `<span>Cognome: ${data.cognome || 'N/D'}</span>` +
+                                             `<span>Nome: ${data.nome || 'N/D'}</span>` +
+                                             `<span>Sede: ${data.sede || 'N/D'}</span>` +
+                                             `<span>Data Reg.: ${data.data_registrazione || 'N/D'}</span>` +
+                                             `<span>Stato: <span class="${statusClass}">${stato || 'Sconosciuto'}</span></span>`;
                          verificationResultEl.innerHTML = htmlRisultato;
-
+                         registrationLinkContainer.style.display = 'none';
                      } else {
-                         verificationResultEl.innerHTML = data.messaggio; // Messaggio "CIP non trovato" o "Formato non valido"
+                         verificationResultEl.innerHTML = data.messaggio || "Questo CIP non risulta nei nostri elenchi. Sei sicuro di aver digitato correttamente?";
                          verificationResultEl.className = 'status-error';
+                         if (data.messaggio && data.messaggio.toLowerCase().includes("non trovato")) {
+                              registrationLinkContainer.style.display = 'block';
+                         } else {
+                              registrationLinkContainer.style.display = 'none';
+                         }
                      }
+                     isVerifying = false; verifyButton.disabled = false;
                  };
-
-                 // Aggiungiamo lo script alla pagina per avviare la chiamata JSONP
+                 script.onerror = function() {
+                     console.error("Errore nel caricamento dello script JSONP per la verifica CIP.");
+                     verificationResultEl.innerHTML = "Impossibile contattare il server di verifica. Riprova più tardi.";
+                     verificationResultEl.className = 'status-error';
+                     if(window[callbackName]) delete window[callbackName];
+                     isVerifying = false; verifyButton.disabled = false;
+                 };
                  document.body.appendChild(script);
-
-                 // Timeout di sicurezza nel caso la chiamata fallisca
                  setTimeout(() => {
-                      if (window[callbackName]) { // Se la callback esiste ancora dopo X secondi, c'è stato un errore
-                           console.error("Timeout chiamata Web App");
-                           verificationResultEl.innerHTML = "Errore durante la verifica. Riprova più tardi.";
+                     if (window[callbackName]) {
+                           console.error("Timeout verifica CIP dopo 15 secondi.");
+                           verificationResultEl.innerHTML = "Errore durante la verifica (timeout). Riprova più tardi.";
                            verificationResultEl.className = 'status-error';
-                           document.body.removeChild(script);
+                           try { document.body.removeChild(script); } catch(e) {}
                            delete window[callbackName];
-                      }
-                 }, 10000); // 10 secondi timeout
+                           isVerifying = false; verifyButton.disabled = false;
+                     }
+                 }, 15000); // Timeout 15 secondi
 
             } catch (error) {
                  console.error("Errore verifica CIP:", error);
                  verificationResultEl.innerHTML = "Errore durante la verifica. Riprova più tardi.";
                  verificationResultEl.className = 'status-error';
+                 isVerifying = false; verifyButton.disabled = false;
             }
         }
 
-        // Associa la funzione al pulsante
+        // Associazione eventi e avvio iniziale
         verifyButton.addEventListener('click', verificaCIP);
-        // Permetti l'invio anche premendo Invio nel campo CIP
-        cipInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                verificaCIP();
-            }
-        });
-        
-        // Avvia il caricamento delle statistiche quando la pagina è pronta
-        window.addEventListener('load', caricaStatistiche);
-        
+        cipInput.addEventListener('keypress', function(event) { if (event.key === 'Enter') { event.preventDefault(); verificaCIP(); } });
+        window.addEventListener('load', () => { typeWriter(); caricaStatistiche(); });
     </script>
 
 </body>
 </html>
+
