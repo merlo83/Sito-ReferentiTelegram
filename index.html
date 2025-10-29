@@ -5,425 +5,823 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accesso Gruppo Referenti Informatici</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
-
-        /* Impostazioni globali e Sfondo */
-        body, html {
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
-            background-color: #000;
-            color: #c9d1d9;
-            font-family: 'Roboto Mono', monospace;
+        /* ===== VARIABILI CSS ===== */
+        :root {
+            --color-bg: #000;
+            --color-text: #c9d1d9;
+            --color-text-bright: #ffffff;
+            --color-primary: #238636;
+            --color-primary-hover: #2ea043;
+            --color-matrix: #0F0;
+            --color-border: #30363d;
+            --color-bg-secondary: rgba(13, 17, 23, 0.7);
+            --color-bg-tertiary: rgba(0, 0, 0, 0.7);
+            --color-success: #3fb950;
+            --color-warning: #d29922;
+            --color-error: #f85149;
+            --color-link: #2AABEE;
+            
+            --font-main: 'Roboto Mono', monospace;
+            --font-size-base: 1.1em;
+            --font-size-title: 2.2em;
+            --font-size-subtitle: 1.6em;
+            
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 30px;
+            --spacing-xl: 40px;
+            
+            --border-radius: 8px;
+            --transition-speed: 0.3s;
         }
 
-        /* Il Canvas per l'effetto Matrix */
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+        body, html {
+            min-height: 100vh;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+        }
+
+        /* ===== CANVAS MATRIX ===== */
         #matrix-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1; /* Sta dietro */
-            pointer-events: none; /* Ignora eventi mouse/touch */
+            z-index: 1;
+            pointer-events: none;
         }
 
-        /* Contenitore per il contenuto */
+        /* ===== LAYOUT PRINCIPALE ===== */
         .container {
             position: relative;
-            z-index: 2; /* Sta davanti */
+            z-index: 2;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centra su Desktop */
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 40px 20px;
-            box-sizing: border-box;
+            padding: var(--spacing-xl) var(--spacing-md);
             text-align: center;
             max-width: 600px;
             margin: 0 auto;
-            text-shadow: 0 0 5px #000, 0 0 10px #000;
         }
 
-        /* Titolo animato */
-        h1 {
-            color: #ffffff;
-            font-size: 2.2em;
-            border-right: 2px solid rgba(0, 255, 0, .75);
+        /* ===== TIPOGRAFIA ===== */
+        .title {
+            color: var(--color-text-bright);
+            font-size: var(--font-size-title);
+            border-right: 2px solid var(--color-matrix);
             white-space: nowrap;
             overflow: hidden;
             margin: 0 auto;
-            animation:
-                typing 3.5s steps(40, end) forwards,
-                blink-caret .75s step-end infinite;
+            animation: typing 3.5s steps(40, end) forwards, blink-caret .75s step-end infinite;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
 
-        /* Titolo Principale */
-        h2 {
-            color: #ffffff;
-            font-size: 1.6em;
-            margin-top: 10px;
-            margin-bottom: 20px;
+        .subtitle {
+            color: var(--color-text-bright);
+            font-size: var(--font-size-subtitle);
+            margin-top: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
             font-weight: 700;
+            text-shadow: 0 0 5px #000;
         }
 
-        p {
-            font-size: 1.1em;
+        .text {
+            font-size: var(--font-size-base);
             line-height: 1.6;
-            color: #c9d1d9;
+            color: var(--color-text);
             margin-bottom: 25px;
         }
 
-        /* Sezione Verifica CIP */
-        #verification-section {
-            background-color: rgba(13, 17, 23, 0.7);
-            border: 1px solid #30363d;
-            border-radius: 8px;
+        /* ===== SEZIONI ===== */
+        .section {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: var(--spacing-lg);
             width: 100%;
-            box-sizing: border-box;
+            backdrop-filter: blur(10px);
         }
-        #verification-section h3 {
-             color: #ffffff;
-             font-size: 1.4em;
-             margin-top: 0;
-             margin-bottom: 20px;
+
+        .section__title {
+            color: var(--color-text-bright);
+            font-size: 1.4em;
+            margin-bottom: var(--spacing-md);
         }
-        /* Contenitore input + bottone */
+
+        /* ===== FORM & INPUT ===== */
         .input-group {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
             flex-wrap: wrap;
         }
-        #cip-input {
-            font-family: 'Roboto Mono', monospace;
+
+        .input-field {
+            font-family: var(--font-main);
             background-color: #0d1117;
-            color: #c9d1d9;
-            border: 1px solid #30363d;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
             padding: 12px 15px;
-            font-size: 1.1em;
+            font-size: var(--font-size-base);
             border-radius: 6px;
             width: 60%;
             max-width: 200px;
             text-align: center;
-            box-sizing: border-box;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+            text-transform: uppercase;
         }
-        .cta-button, #verify-button {
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(35, 134, 54, 0.2);
+        }
+
+        .input-field::placeholder {
+            text-transform: none;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
             display: inline-block;
-            background-color: #238636;
-            color: #ffffff;
+            background-color: var(--color-primary);
+            color: var(--color-text-bright);
             font-weight: 700;
             text-decoration: none;
             padding: 12px 25px;
-            font-size: 1.1em;
+            font-size: var(--font-size-base);
             border-radius: 6px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
             cursor: pointer;
             border: none;
-            vertical-align: middle;
+            font-family: var(--font-main);
         }
-         #verify-button {
-             margin-top: 0;
-             flex-shrink: 0;
-         }
-        .cta-button:hover, #verify-button:hover { background-color: #2ea043; transform: scale(1.05); }
 
-        #verification-result {
+        .btn:hover:not(:disabled) {
+            background-color: var(--color-primary-hover);
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-text-bright);
+            outline-offset: 2px;
+        }
+
+        /* ===== RESULT BOX ===== */
+        .result-box {
             margin-top: 25px;
             padding: 15px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 1px solid #30363d;
+            background-color: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
             border-radius: 6px;
             min-height: 40px;
             line-height: 1.7;
-            color: #c9d1d9;
+            color: var(--color-text);
             text-align: left;
             font-size: 1em;
         }
-        #verification-result strong { color: #ffffff; display: block; margin-bottom: 8px; }
-        #verification-result span { display: block; margin-bottom: 3px;}
-        .status-ok { color: #3fb950; font-weight: bold; }
-        .status-pending { color: #d29922; font-weight: bold; }
-        .status-rejected { color: #f85149; font-weight: bold; }
-        .status-error { color: #f85149; font-weight: bold; }
 
-        /* Contenitore Link Registrazione */
-        #registration-link-container {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: rgba(13, 17, 23, 0.7);
-            border: 1px solid #30363d;
-            border-radius: 8px;
+        .result-box__title {
+            color: var(--color-text-bright);
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
         }
-         #registration-link-container p {
-             margin-bottom: 15px;
-             color: #ffffff;
-             font-size: 1em;
-             line-height: 1.5;
-         }
-         #registration-link-container .cta-button { margin-top: 0; }
 
-        /* Contatto Admin */
-        .contact-info { margin-top: 30px; }
-        .contact-info a { color: #2AABEE; text-decoration: none; font-size: 1.1em; font-weight: 700; }
-        .contact-info a:hover { text-decoration: underline; }
+        .result-box__item {
+            display: block;
+            margin-bottom: 3px;
+        }
 
-        /* Statistiche */
-        .stats-container { border-top: 1px solid #30363d; width: 100%; margin-top: 35px; padding: 20px 10px; font-size: 0.95em; background-color: rgba(0, 0, 0, 0.6); border-radius: 8px; color: #FFFFFF; font-weight: 700; }
-        .stats-box { display: inline-block; margin: 0 15px; }
-        .stats-box span { display: block; font-size: 1.8em; color: #FFFFFF; font-weight: 700; margin-top: 5px; }
-        .loading { animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.3; } }
+        .status--ok { color: var(--color-success); font-weight: bold; }
+        .status--pending { color: var(--color-warning); font-weight: bold; }
+        .status--error { color: var(--color-error); font-weight: bold; }
 
-        /* Animazioni */
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(0, 255, 0, .75); } }
+        /* ===== LINK REGISTRAZIONE ===== */
+        .registration-container {
+            display: none;
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+        }
 
-        /* Media Query per Mobile */
+        .registration-container.is-visible {
+            display: block;
+        }
+
+        .registration-container .text {
+            margin-bottom: 15px;
+            color: var(--color-text-bright);
+            line-height: 1.5;
+        }
+
+        /* ===== CONTACT INFO ===== */
+        .contact {
+            margin-top: var(--spacing-lg);
+        }
+
+        .contact__link {
+            color: var(--color-link);
+            text-decoration: none;
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            transition: text-decoration var(--transition-speed);
+        }
+
+        .contact__link:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== STATISTICHE ===== */
+        .stats {
+            border-top: 1px solid var(--color-border);
+            width: 100%;
+            margin-top: 35px;
+            padding: var(--spacing-md) var(--spacing-sm);
+            font-size: 0.95em;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: var(--border-radius);
+            color: var(--color-text-bright);
+            font-weight: 700;
+        }
+
+        .stats__item {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        .stats__value {
+            display: block;
+            font-size: 1.8em;
+            color: var(--color-text-bright);
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            animation: blink 1s infinite;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 22ch; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: rgba(0, 255, 0, .75); }
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.3; }
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
-            .container { justify-content: flex-start; padding-top: 8vh; padding-bottom: 5vh; }
-            h1 { font-size: 1.8em; }
-            h2 { font-size: 1.4em; }
-            p { font-size: 1.0em; }
-            .input-group { flex-direction: column; gap: 15px; }
-            #cip-input { width: 90%; max-width: none; margin-right: 0; }
-            #verify-button { width: 90%; }
-            #verification-result { font-size: 0.95em; }
-            #registration-link-container p { font-size: 0.95em; }
-            .stats-box { margin: 5px 10px; }
-            .stats-box span { font-size: 1.6em; }
+            :root {
+                --font-size-title: 1.6em;
+                --font-size-subtitle: 1.4em;
+                --font-size-base: 1.0em;
+            }
+
+            .container {
+                justify-content: flex-start;
+                padding-top: 8vh;
+                padding-bottom: 5vh;
+            }
+
+            .input-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .input-field {
+                width: 90%;
+                max-width: none;
+            }
+
+            .btn {
+                width: 90%;
+            }
+
+            .result-box {
+                font-size: 0.95em;
+            }
+
+            .stats__item {
+                margin: 5px 10px;
+            }
+
+            .stats__value {
+                font-size: 1.6em;
+            }
+        }
+
+        /* ===== ACCESSIBILITY ===== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KBE63SN7L"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-2KBE63SN7L');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2KBE63SN7L', { 'anonymize_ip': true });
     </script>
-    <!-- Fine Google tag -->
-
 </head>
 <body>
-
-    <canvas id="matrix-canvas"></canvas>
+    <canvas id="matrix-canvas" aria-hidden="true"></canvas>
 
     <div class="container">
-        <h1 id="title"></h1>
-        <h2>Gruppo Referenti Informatici</h2>
+        <h1 class="title" id="title" aria-label="Accesso Area Riservata"></h1>
+        <h2 class="subtitle">Gruppo Referenti Informatici</h2>
 
-        <!-- SEZIONE VERIFICA CIP (SOLO CIP) -->
-        <div id="verification-section">
-            <h3>Verifica Registrazione</h3>
-            <p style="margin-bottom: 20px;">Inserisci il tuo CIP per controllare lo stato.</p>
+        <!-- SEZIONE VERIFICA CIP -->
+        <section class="section" aria-labelledby="verification-title">
+            <h3 class="section__title" id="verification-title">Verifica Registrazione</h3>
+            <p class="text">Inserisci il tuo CIP per controllare lo stato.</p>
+            
             <div class="input-group">
-                <input type="text" id="cip-input" class="input-field" placeholder="123456AB" maxlength="8" aria-label="Inserisci CIP">
-                <button id="verify-button" class="cta-button">Verifica</button>
+                <input 
+                    type="text" 
+                    id="cip-input" 
+                    class="input-field" 
+                    placeholder="123456AB" 
+                    maxlength="8" 
+                    aria-label="Inserisci CIP (6 numeri e 2 lettere)"
+                    autocomplete="off"
+                    autocapitalize="characters">
+                <button id="verify-button" class="btn" aria-label="Verifica CIP">Verifica</button>
             </div>
-            <div id="verification-result" style="display: none;"></div>
+            
+            <div id="verification-result" class="result-box hidden" role="status" aria-live="polite"></div>
+        </section>
+
+        <!-- LINK REGISTRAZIONE -->
+        <div id="registration-link-container" class="registration-container">
+            <p class="text">Questo CIP non risulta nei nostri elenchi.<br>Sei sicuro di aver digitato correttamente?<br>Se sì, e non ti sei mai registrato, procedi:</p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeYQ5Bq3v6CsQ4CqriLIowZ4-yuYkNUElBgS8ANPf67pg4qkg/viewform" 
+               id="registration-link" 
+               class="btn" 
+               target="_blank"
+               rel="noopener noreferrer">
+               Vai al Modulo di Registrazione
+            </a>
         </div>
 
-        <!-- LINK REGISTRAZIONE (Nascosto) -->
-        <div id="registration-link-container">
-             <p>Questo CIP non risulta nei nostri elenchi.<br>Sei sicuro di aver digitato correttamente?<br>Se sì, e non ti sei mai registrato, procedi:</p>
-             <a href="https://docs.google.com/forms/d/e/1FAIpQLSeYQ5Bq3v6CsQ4CqriLIowZ4-yuYkNUElBgS8ANPf67pg4qkg/viewform" id="registration-link" class="cta-button" target="_blank">
-                 Vai al Modulo di Registrazione
-             </a>
-        </div>
-
-        <!-- INFO CONTATTO ADMIN -->
-        <div class="contact-info">
-            <a href="https://t.me/merlo83" target="_blank">Contatto Admin: @merlo83</a>
+        <!-- CONTATTO ADMIN -->
+        <div class="contact">
+            <a href="https://t.me/merlo83" class="contact__link" target="_blank" rel="noopener noreferrer">
+                Contatto Admin: @merlo83
+            </a>
         </div>
 
         <!-- STATISTICHE -->
-        <div class="stats-container">
-            <div class="stats-box">
-                Registrati Confermati:
-                <span id="stats-registrati" class="loading">...</span>
+        <div class="stats" aria-label="Statistiche registrazioni">
+            <div class="stats__item">
+                <div>Registrati Confermati:</div>
+                <span id="stats-registrati" class="stats__value loading" aria-live="polite">...</span>
             </div>
-            <div class="stats-box">
-                Registrazioni in Attesa:
-                <span id="stats-in-attesa" class="loading">...</span>
+            <div class="stats__item">
+                <div>Registrazioni in Attesa:</div>
+                <span id="stats-in-attesa" class="stats__value loading" aria-live="polite">...</span>
             </div>
         </div>
-
     </div>
 
     <script>
-        // --- Script #1: Effetto "macchina da scrivere" ---
-        const textToType = "> Accesso Area Riservata";
-        const titleElement = document.getElementById('title');
-        let index = 0; let speed = 80;
-        function typeWriter() { if (index < textToType.length) { titleElement.innerHTML += textToType.charAt(index); index++; setTimeout(typeWriter, speed); } }
-
-        // --- Script #2: Effetto "Matrix Rain" ---
-        const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d');
-        let cw = window.innerWidth; let ch = window.innerHeight; canvas.width = cw; canvas.height = ch;
-        window.addEventListener('resize', () => { cw = window.innerWidth; ch = window.innerHeight; canvas.width = cw; canvas.height = ch; columns = Math.max(1, Math.floor(cw / fontSize)); drops = []; for(let x = 0; x < columns; x++) drops[x] = 1 + Math.random() * ch / fontSize; });
-        let katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        let chars = (katakana + '0123456789').split(''); const fontSize = 14; let columns = Math.max(1, Math.floor(cw / fontSize)); let drops = [];
-        for(let x = 0; x < columns; x++) drops[x] = 1 + Math.random() * ch / fontSize;
-        function drawMatrix() { try { ctx.fillStyle = 'rgba(0, 0, 0, 0.04)'; ctx.fillRect(0, 0, cw, ch); ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px Roboto Mono'; for(let i = 0; i < drops.length; i++) { const text = chars[Math.floor(Math.random() * chars.length)]; ctx.fillText(text, i * fontSize, drops[i] * fontSize); if(drops[i] * fontSize > ch && Math.random() > 0.975) drops[i] = 0; drops[i]++; } } catch (e) { console.error("Errore in drawMatrix:", e); clearInterval(matrixInterval); } }
-        let matrixInterval = setInterval(drawMatrix, 50);
-
-        // --- Script #3: STATISTICHE e VERIFICA CIP (con Precompilazione) ---
-        // ▼▼▼ URL INCOLLATO QUI ▼▼▼
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxk0v9Tk1pVB7evv-KyRll436aWrITUupHAVxSs3AebxayY6KMa90WlUMjAqko1k-QK/exec";
-        // ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲ ▲▲▲
-        const FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeYQ5Bq3v6CsQ4CqriLIowZ4-yuYkNUElBgS8ANPf67pg4qkg/viewform"; // URL Base del form
-        const CIP_ENTRY_ID = "entry.1189364192"; // ID del campo CIP
-
-        const registratiEl = document.getElementById('stats-registrati');
-        const inAttesaEl = document.getElementById('stats-in-attesa');
-        const cipInput = document.getElementById('cip-input');
-        const verifyButton = document.getElementById('verify-button');
-        const verificationResultEl = document.getElementById('verification-result');
-        const registrationLinkContainer = document.getElementById('registration-link-container');
-        const registrationLink = document.getElementById('registration-link');
-        let isVerifying = false;
-
-        // Funzione Statistiche
-        async function caricaStatistiche() {
-            if (!WEB_APP_URL || WEB_APP_URL.includes("INCOLLA QUI") || WEB_APP_URL.length < 20) {
-                 console.error("URL Web App non configurato o errato.");
-                 registratiEl.innerText = "Errore"; inAttesaEl.innerText = "Conf.";
-                 registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
-                 return;
+        // ===== CONFIGURAZIONE =====
+        const CONFIG = {
+            webAppUrl: "https://script.google.com/macros/s/AKfycbxk0v9Tk1pVB7evv-KyRll436aWrITUupHAVxSs3AebxayY6KMa90WlUMjAqko1k-QK/exec",
+            formBaseUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeYQ5Bq3v6CsQ4CqriLIowZ4-yuYkNUElBgS8ANPf67pg4qkg/viewform",
+            cipEntryId: "entry.1189364192",
+            cipPattern: /^[0-9]{6}[A-Z]{2}$/,
+            timeouts: {
+                stats: 20000,
+                verify: 15000
+            },
+            matrix: {
+                fontSize: 14,
+                fps: 20,
+                fadeOpacity: 0.04
+            },
+            typing: {
+                text: "> Accesso Area Riservata",
+                speed: 90
             }
-            try {
-                const callbackName = 'jsonp_stats_callback_' + Date.now();
+        };
+
+        // ===== UTILITY FUNCTIONS =====
+        const Utils = {
+            /**
+             * Crea uno script JSONP e gestisce il timeout e la pulizia.
+             * @param {string} url - L'URL completo della richiesta.
+             * @param {string} callbackName - Il nome della funzione di callback.
+             * @param {function} onSuccess - Funzione da chiamare in caso di successo.
+             * @param {function} onError - Funzione da chiamare in caso di errore/timeout.
+             * @param {number} timeout - Millisecondi per il timeout.
+             */
+            createJsonpScript(url, callbackName, onSuccess, onError, timeout) {
                 const script = document.createElement('script');
-                script.src = `${WEB_APP_URL}?callback=${callbackName}`;
+                script.src = url;
+                
+                const cleanup = () => {
+                    Utils.cleanupJsonp(script, callbackName);
+                };
 
-                window[callbackName] = function(data) {
-                    try { document.body.removeChild(script); } catch(e) {}
-                    delete window[callbackName];
-                    if (data.errore) { throw new Error(data.errore); }
-                    if (data.tipo !== 'statistiche') { throw new Error("Risposta stat non valida (tipo errato)"); }
-                    registratiEl.innerText = data.utenti_registrati ?? 'N/D';
-                    inAttesaEl.innerText = data.utenti_in_attesa ?? 'N/D';
-                    registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
-                };
-                script.onerror = function() {
-                     console.error("Errore caricamento script JSONP statistiche.");
-                     registratiEl.innerText = "Errore"; inAttesaEl.innerText = "Server";
-                     registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
-                     if(window[callbackName]) delete window[callbackName];
-                };
-                document.body.appendChild(script);
-                setTimeout(() => {
+                const timeoutId = setTimeout(() => {
                     if (window[callbackName]) {
-                        console.error("Timeout caricamento statistiche (20s).");
-                        registratiEl.innerText = "Timeout"; inAttesaEl.innerText = "Timeout";
-                        registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
-                        try { document.body.removeChild(script); } catch(e) {}
-                        delete window[callbackName];
+                        onError(new Error('Timeout'));
+                        cleanup();
                     }
-                }, 20000); // Timeout 20 secondi
-            } catch (error) {
-                 console.error("Errore imprevisto in caricaStatistiche:", error);
-                 registratiEl.innerText = "Errore"; inAttesaEl.innerText = "JS";
-                 registratiEl.classList.remove('loading'); inAttesaEl.classList.remove('loading');
-             }
-        }
+                }, timeout);
 
-        // Funzione Verifica CIP
-        async function verificaCIP() {
-            if (isVerifying) return;
-            isVerifying = true; verifyButton.disabled = true;
+                script.onerror = () => {
+                    onError(new Error('Errore caricamento script'));
+                    clearTimeout(timeoutId);
+                    cleanup();
+                };
 
-            const cip = cipInput.value.trim().toUpperCase();
-            verificationResultEl.style.display = 'block';
-            verificationResultEl.innerHTML = '<span class="loading">Verifica in corso...</span>';
-            verificationResultEl.className = ''; registrationLinkContainer.style.display = 'none';
+                // Funzione di callback globale
+                window[callbackName] = (data) => {
+                    clearTimeout(timeoutId);
+                    cleanup();
+                    onSuccess(data); // Chiama la funzione di successo
+                };
 
-            if (!/^[0-9]{6}[A-Z]{2}$/.test(cip)) {
-                 verificationResultEl.innerHTML = "Formato CIP non valido (6 numeri + 2 lettere).";
-                 verificationResultEl.className = 'status-error';
-                 isVerifying = false; verifyButton.disabled = false; return;
+                document.body.appendChild(script);
+            },
+
+            /**
+             * Rimuove lo script e la funzione di callback globale.
+             */
+            cleanupJsonp(script, callbackName) {
+                try {
+                    if (script && script.parentNode) {
+                        script.parentNode.removeChild(script);
+                    }
+                } catch(e) {
+                    console.error('Error removing script:', e);
+                }
+                if (window[callbackName]) {
+                    try {
+                        delete window[callbackName];
+                    } catch(e) {
+                         window[callbackName] = undefined; // Fallback
+                    }
+                }
+            },
+
+            /**
+             * Valida il formato del CIP.
+             */
+            validateCIP(cip) {
+                return typeof cip === 'string' && CONFIG.cipPattern.test(cip);
+            },
+
+            /**
+             * Restituisce la classe CSS corretta per lo stato.
+             */
+            getStatusClass(stato) {
+                const s = stato ? stato.toLowerCase() : '';
+                if (s.includes('confermata')) return 'status--ok';
+                if (s.includes('incompleta')) return 'status--error';
+                if (s.includes('attesa')) return 'status--pending';
+                return 'status--error'; // Default
+            }
+        };
+
+        // ===== TYPEWRITER EFFECT =====
+        class TypeWriter {
+            constructor(element, text, speed) {
+                this.element = element;
+                this.text = text;
+                this.speed = speed;
+                this.index = 0;
             }
 
+            type() {
+                if (this.index < this.text.length) {
+                    this.element.textContent += this.text.charAt(this.index);
+                    this.index++;
+                    setTimeout(() => this.type(), this.speed);
+                }
+            }
+
+            start() {
+                this.element.textContent = '';
+                this.type();
+            }
+        }
+
+        // ===== MATRIX EFFECT =====
+        class MatrixRain {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789'.split('');
+                this.fontSize = CONFIG.matrix.fontSize;
+                this.columns = 0;
+                this.drops = [];
+                this.animationId = null;
+                this.isVisible = true;
+                
+                this.resize();
+                this.setupVisibilityHandler();
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => this.resize(), 100);
+                });
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.columns = Math.max(1, Math.floor(this.canvas.width / this.fontSize));
+                this.drops = Array.from({length: this.columns}, () => 
+                    1 + Math.random() * this.canvas.height / this.fontSize
+                );
+            }
+
+            setupVisibilityHandler() {
+                document.addEventListener('visibilitychange', () => {
+                    this.isVisible = !document.hidden;
+                    if (this.isVisible && !this.animationId) {
+                        this.start();
+                    } else if (!this.isVisible && this.animationId) {
+                        this.stop();
+                    }
+                });
+            }
+
+            draw() {
+                if (!this.isVisible) return;
+                try {
+                    this.ctx.fillStyle = `rgba(0, 0, 0, ${CONFIG.matrix.fadeOpacity})`;
+                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.fillStyle = '#0F0';
+                    this.ctx.font = `${this.fontSize}px Roboto Mono`;
+                    for (let i = 0; i < this.drops.length; i++) {
+                        const char = this.chars[Math.floor(Math.random() * this.chars.length)];
+                        this.ctx.fillText(char, i * this.fontSize, this.drops[i] * this.fontSize);
+                        if (this.drops[i] * this.fontSize > this.canvas.height && Math.random() > 0.975) {
+                            this.drops[i] = 0;
+                        }
+                        this.drops[i]++;
+                    }
+                } catch (e) {
+                    console.error('Matrix draw error:', e);
+                    this.stop();
+                }
+            }
+
+            start() {
+                if (this.animationId) this.stop();
+                this.animationId = setInterval(() => this.draw(), 1000 / CONFIG.matrix.fps);
+            }
+
+            stop() {
+                if (this.animationId) {
+                    clearInterval(this.animationId);
+                    this.animationId = null;
+                }
+            }
+        }
+
+        // ===== STATISTICS MANAGER =====
+        class StatsManager {
+            constructor() {
+                this.registratiEl = document.getElementById('stats-registrati');
+                this.inAttesaEl = document.getElementById('stats-in-attesa');
+            }
+
+            async load() {
+                if (!this.validateConfig()) {
+                    this.showError('Configurazione URL non valida');
+                    return;
+                }
+                const callbackName = `jsonp_stats_${Date.now()}`;
+                const url = `${CONFIG.webAppUrl}?callback=${callbackName}`;
+
+                try {
+                    // Passa this.handleResponse come funzione onSuccess
+                    Utils.createJsonpScript(
+                        url,
+                        callbackName,
+                        (data) => this.handleResponse(data), // <-- CORREZIONE
+                        (error) => { // Gestore onError
+                            console.error('Stats JSONP Error:', error.message);
+                            this.showError(error.message.includes('Timeout') ? 'Timeout Caricamento' : 'Errore Server');
+                        },
+                        CONFIG.timeouts.stats
+                    );
+                } catch (error) {
+                    console.error('Stats load error:', error);
+                    this.showError('Errore JS Imprevisto');
+                }
+            }
+
+            validateConfig() {
+                return CONFIG.webAppUrl && CONFIG.webAppUrl.length > 20 && !CONFIG.webAppUrl.includes('INSERIRE');
+            }
+
+            handleResponse(data) {
+                if (data.errore) { this.showError(data.errore); return; }
+                if (data.tipo !== 'statistiche') { this.showError('Risposta non valida'); return; }
+                this.registratiEl.textContent = data.utenti_registrati ?? 'N/D';
+                this.inAttesaEl.textContent = data.utenti_in_attesa ?? 'N/D';
+                this.registratiEl.classList.remove('loading');
+                this.inAttesaEl.classList.remove('loading');
+            }
+
+            showError(message) {
+                this.registratiEl.textContent = 'Errore'; this.inAttesaEl.textContent = 'Errore';
+                this.registratiEl.classList.remove('loading'); this.inAttesaEl.classList.remove('loading');
+                console.error('StatsManager Error:', message);
+            }
+        }
+
+        // ===== CIP VERIFIER =====
+        class CIPVerifier {
+            constructor() {
+                this.cipInput = document.getElementById('cip-input');
+                this.verifyButton = document.getElementById('verify-button');
+                this.resultEl = document.getElementById('verification-result');
+                this.registrationContainer = document.getElementById('registration-link-container');
+                this.registrationLink = document.getElementById('registration-link');
+                this.isVerifying = false;
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.verifyButton.addEventListener('click', () => this.verify());
+                this.cipInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') { e.preventDefault(); this.verify(); }
+                });
+                this.cipInput.addEventListener('input', (e) => {
+                    const start = e.target.selectionStart; const end = e.target.selectionEnd;
+                    e.target.value = e.target.value.toUpperCase();
+                    e.target.setSelectionRange(start, end);
+                });
+            }
+
+            async verify() {
+                if (this.isVerifying) return;
+                const cip = this.cipInput.value.trim().toUpperCase();
+                
+                if (!Utils.validateCIP(cip)) {
+                    this.showResult('Formato CIP non valido (6 numeri + 2 lettere)', 'status--error');
+                    this.registrationContainer.classList.remove('is-visible');
+                    return;
+                }
+
+                this.startVerification();
+                const callbackName = `jsonp_verify_${Date.now()}`;
+                const url = `${CONFIG.webAppUrl}?cip=${encodeURIComponent(cip)}&callback=${callbackName}`;
+
+                try {
+                    // Passa this.handleResponse come funzione onSuccess
+                    Utils.createJsonpScript(
+                        url,
+                        callbackName,
+                        (data) => this.handleResponse(data, cip), // <-- CORREZIONE
+                        (error) => { // Gestore onError
+                            console.error('Verify JSONP Error:', error.message);
+                            this.showResult(error.message.includes('Timeout') ? 'Errore: Timeout' : 'Errore Server/Rete', 'status--error');
+                            this.endVerification();
+                        },
+                        CONFIG.timeouts.verify
+                    );
+                } catch (error) {
+                    console.error('Verify error:', error);
+                    this.showResult('Errore durante la verifica. Riprova più tardi.', 'status--error');
+                    this.endVerification();
+                }
+            }
+
+            startVerification() {
+                this.isVerifying = true; this.verifyButton.disabled = true;
+                this.showResult('Verifica in corso...', 'loading');
+                this.registrationContainer.classList.remove('is-visible');
+            }
+
+            endVerification() {
+                this.isVerifying = false; this.verifyButton.disabled = false;
+            }
+
+            handleResponse(data, cip) {
+                if (data.errore) { this.showResult(`Errore: ${data.errore}`, 'status--error'); this.endVerification(); return; }
+                if (data.tipo !== 'verifica') { this.showResult('Risposta non valida dal server', 'status--error'); this.endVerification(); return; }
+                if (data.trovato) { this.showUserData(data); }
+                else { this.showNotFound(data, cip); }
+                this.endVerification();
+            }
+
+            showUserData(data) {
+                const statusClass = Utils.getStatusClass(data.stato);
+                const html = `
+                    <strong class="result-box__title">Risulti Già Registrato:</strong>
+                    <span class="result-box__item">Grado: ${this.escapeHtml(data.grado || 'N/D')}</span>
+                    <span class="result-box__item">Cognome: ${this.escapeHtml(data.cognome || 'N/D')}</span>
+                    <span class="result-box__item">Nome: ${this.escapeHtml(data.nome || 'N/D')}</span>
+                    <span class="result-box__item">Sede: ${this.escapeHtml(data.sede || 'N/D')}</span>
+                    <span class="result-box__item">Data Reg.: ${this.escapeHtml(data.data_registrazione || 'N/D')}</span>
+                    <span class="result-box__item">Stato: <span class="${statusClass}">${this.escapeHtml(data.stato || 'Sconosciuto')}</span></span>
+                `;
+                this.resultEl.innerHTML = html;
+                this.resultEl.className = 'result-box';
+                this.registrationContainer.classList.remove('is-visible');
+                this.resultEl.classList.remove('hidden'); // Assicura che sia visibile
+            }
+
+            showNotFound(data, cip) {
+                const message = data.messaggio || 'Questo CIP non risulta nei nostri elenchi.';
+                this.showResult(message, 'status--error');
+                if (message.toLowerCase().includes('non trovato')) {
+                    const prefilledUrl = `${CONFIG.formBaseUrl}?usp=pp_url&${CONFIG.cipEntryId}=${encodeURIComponent(cip)}`;
+                    this.registrationLink.href = prefilledUrl;
+                    this.registrationContainer.classList.add('is-visible');
+                }
+            }
+
+            showResult(message, className = '') {
+                this.resultEl.textContent = message;
+                this.resultEl.className = `result-box ${className}`;
+            }
+
+            escapeHtml(text) {
+                if (text === null || text === undefined) return '';
+                const div = document.createElement('div');
+                div.textContent = String(text);
+                return div.innerHTML;
+            }
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
             try {
-                 const callbackName = 'jsonp_verify_callback_' + Date.now();
-                 const script = document.createElement('script');
-                 script.src = `${WEB_APP_URL}?cip=${encodeURIComponent(cip)}&callback=${callbackName}`;
+                // Matrix Effect
+                const canvas = document.getElementById('matrix-canvas');
+                const matrix = new MatrixRain(canvas);
+                if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    matrix.start();
+                }
 
-                 window[callbackName] = function(data) {
-                     try { document.body.removeChild(script); } catch(e) {}
-                     delete window[callbackName];
-                     if (data.errore) { throw new Error(data.errore); }
-                     if (data.tipo !== 'verifica') { throw new Error("Risposta verifica non valida."); }
+                // Typewriter Effect
+                const titleEl = document.getElementById('title');
+                const typewriter = new TypeWriter(titleEl, CONFIG.typing.text, CONFIG.typing.speed);
+                typewriter.start();
 
-                     if (data.trovato) {
-                         let statusClass = '';
-                         const stato = data.stato || '';
-                         if (stato.includes('Confermata')) statusClass = 'status-ok';
-                         else if (stato.includes('Incompleta')) statusClass = 'status-rejected';
-                         else if (stato.includes('Attesa')) statusClass = 'status-pending';
-                         else statusClass = 'status-error';
-                         let htmlRisultato = `<strong>Risulti Già Registrato:</strong>` +
-                                             `<span>Grado: ${data.grado || 'N/D'}</span>` +
-                                             `<span>Cognome: ${data.cognome || 'N/D'}</span>` +
-                                             `<span>Nome: ${data.nome || 'N/D'}</span>` +
-                                             `<span>Sede: ${data.sede || 'N/D'}</span>` +
-                                             `<span>Data Reg.: ${data.data_registrazione || 'N/D'}</span>` +
-                                             `<span>Stato: <span class="${statusClass}">${stato || 'Sconosciuto'}</span></span>`;
-                         verificationResultEl.innerHTML = htmlRisultato;
-                         registrationLinkContainer.style.display = 'none';
-                     } else {
-                         verificationResultEl.innerHTML = data.messaggio || "Questo CIP non risulta nei nostri elenchi. Sei sicuro di aver digitato correttamente?";
-                         verificationResultEl.className = 'status-error';
-                         if (data.messaggio && data.messaggio.toLowerCase().includes("non trovato")) {
-                              const prefilledUrl = `${FORM_BASE_URL}?usp=pp_url&${CIP_ENTRY_ID}=${encodeURIComponent(cip)}`;
-                              registrationLink.href = prefilledUrl;
-                              registrationLinkContainer.style.display = 'block';
-                         } else {
-                              registrationLinkContainer.style.display = 'none';
-                         }
-                     }
-                     isVerifying = false; verifyButton.disabled = false;
-                 };
-                 script.onerror = function() {
-                     console.error("Errore caricamento script JSONP verifica CIP.");
-                     verificationResultEl.innerHTML = "Impossibile contattare il server di verifica. Riprova più tardi.";
-                     verificationResultEl.className = 'status-error';
-                     if(window[callbackName]) delete window[callbackName];
-                     isVerifying = false; verifyButton.disabled = false;
-                 };
-                 document.body.appendChild(script);
-                 setTimeout(() => {
-                     if (window[callbackName]) {
-                           console.error("Timeout verifica CIP (15s).");
-                           verificationResultEl.innerHTML = "Errore durante la verifica (timeout). Riprova più tardi.";
-                           verificationResultEl.className = 'status-error';
-                           try { document.body.removeChild(script); } catch(e) {}
-                           delete window[callbackName];
-                           isVerifying = false; verifyButton.disabled = false;
-                     }
-                 }, 15000); // Timeout 15 secondi
+                // Statistics
+                const stats = new StatsManager();
+                stats.load();
 
+                // CIP Verification
+                const verifier = new CIPVerifier();
             } catch (error) {
-                 console.error("Errore imprevisto in verificaCIP:", error);
-                 verificationResultEl.innerHTML = "Errore durante la verifica. Riprova più tardi.";
-                 verificationResultEl.className = 'status-error';
-                 isVerifying = false; verifyButton.disabled = false;
+                console.error("Errore durante l'inizializzazione della pagina:", error);
+                const container = document.querySelector('.container') || document.body;
+                container.innerHTML = `<h2 style="color: var(--color-error);">Errore critico durante il caricamento.</h2><p style="color: var(--color-text);">Riprova ricaricando la pagina.</p>`;
             }
-        }
-
-        // Associazione eventi e avvio iniziale
-        verifyButton.addEventListener('click', verificaCIP);
-        cipInput.addEventListener('keypress', function(event) { if (event.key === 'Enter') { event.preventDefault(); verificaCIP(); } });
-        window.addEventListener('load', () => { typeWriter(); caricaStatistiche(); });
+        });
     </script>
-
 </body>
 </html>
-
